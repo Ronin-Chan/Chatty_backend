@@ -1,17 +1,18 @@
-import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
-import http from 'http';
-import cors from 'cors';
-import helmet from 'helmet';
-import hpp from 'hpp';
+import { createAdapter } from '@socket.io/redis-adapter';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
+import cors from 'cors';
+import { Application, NextFunction, Request, Response, json, urlencoded } from 'express';
+import helmet from 'helmet';
+import hpp from 'hpp';
+import http from 'http';
 import HTTP_STATUS from 'http-status-codes';
-import { config } from './config';
-import { Server } from 'socket.io';
-import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
-import applicationRoutes from './route';
-import { CustomError, IErrorResponse } from './shared/globals/helpers/errorHandler';
+import { Server } from 'socket.io';
+import { config } from '@root/config';
+import applicationRoutes from '@root/route';
+
+import { CustomError, IErrorResponse } from '@global/helpers/errorHandler';
 import Logger from 'bunyan';
 
 const SERVER_PORT = 5000;
@@ -29,8 +30,8 @@ export class ChattyServer {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
     this.routesMiddleware(this.app);
-    this.globalErrorHandler(this.app);
     this.startServer(this.app);
+    this.globalErrorHandler(this.app);
   }
 
   private securityMiddleware(app: Application): void {
@@ -69,7 +70,7 @@ export class ChattyServer {
       res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });
 
-    app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
+    app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
       log.error(error);
       if (error instanceof CustomError) {
         return res.status(error.statusCode).json(error.serializeErrors());
@@ -110,5 +111,8 @@ export class ChattyServer {
     });
   }
 
-  private socketIOConnections(io: Server): void {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private socketIOConnections(io: Server): void {
+    log.info('CreateSocketIOConnections');
+  }
 }

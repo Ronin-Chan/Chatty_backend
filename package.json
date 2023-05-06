@@ -4,18 +4,25 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "start": "nodemon ./build/app.js",
     "dev": "nodemon -r tsconfig-paths/register src/app.ts | bunyan",
     "lint:check": "eslint \"src/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" --fix",
     "prettier:check": "prettier --check \"src/**/*.{ts,json}\"",
-    "prettier:fix": "prettier --write \"src/**/*.{ts,json}\""
+    "prettier:fix": "prettier --write \"src/**/*.{ts,json}\"",
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@bull-board/express": "^5.1.2",
+    "@bull-board/ui": "^5.1.2",
     "@socket.io/redis-adapter": "^8.1.0",
+    "bcryptjs": "^2.4.3",
+    "bull": "^4.10.4",
     "bunyan": "^1.8.15",
+    "cloudinary": "^1.36.2",
     "compression": "^1.7.4",
     "cookie-session": "^2.0.0",
     "cores": "^0.8.5",
@@ -26,24 +33,31 @@
     "helmet": "^6.1.5",
     "hpp": "^0.2.3",
     "http-status-codes": "^2.2.0",
+    "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.0.5",
     "nodemon": "^2.0.22",
     "redis": "^4.6.6",
     "socket.io": "^4.6.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "typescript-transform-paths": "^3.4.6"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/bunyan": "^1.8.8",
     "@types/compression": "^1.7.2",
     "@types/cookie-session": "^2.0.44",
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/hpp": "^0.2.2",
+    "@types/jsonwebtoken": "^9.0.2",
+    "@types/lodash": "^4.14.194",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
     "eslint": "^8.39.0",
     "eslint-config-prettier": "^8.8.0",
     "prettier": "^2.8.8",
+    "tsc-alias": "^1.8.6",
     "tsconfig-paths": "^4.2.0"
   }
 }
