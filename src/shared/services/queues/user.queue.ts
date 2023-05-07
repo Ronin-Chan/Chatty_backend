@@ -1,4 +1,4 @@
-import { BaseQueue } from './base.queue';
+import { BaseQueue } from '@service/queues/base.queue';
 import { userWorker } from '@worker/user.worker';
 
 class UserQueue extends BaseQueue {

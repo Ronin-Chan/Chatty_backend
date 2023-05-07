@@ -24,7 +24,7 @@ withCredentials: true
 
 {
   "username" : "Ronin",
-  "password" : "123456"
+  "password" : "qwert"
 }
 
 ###
@@ -38,4 +38,25 @@ GET {{baseUrl}}/{{urlPath}}/currentuser
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
+
+###
+POST {{baseUrl}}/{{urlPath}}/forgot-password
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "email" : "ronin@outlook.com"
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/reset-password/80187d3542ae1f7b81793bf64cca4b1011da4b46
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "password" : "qwert11",
+  "confirmPassword": "qwert11"
+}
 
