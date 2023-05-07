@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { config } from '@root/config';
 import JWT from 'jsonwebtoken';
 import { joiValidation } from '@global/decorators/joiValidation.decorators';
@@ -12,16 +12,16 @@ import { IUserDocument } from '@user/interfaces/user.interface';
 
 export class SignIn {
   @joiValidation(loginSchema)
-  public async read(req: Request, res: Response): Promise<void> {
+  public async read(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { username, password } = req.body;
     const existingUser: IAuthDocument = await authService.getAuthUserByUsername(username);
     if (!existingUser) {
-      throw new BadRequestError('Invalid credentials');
+      return next(new BadRequestError('Invalid credentials'));
     }
 
     const passwordsMatch: boolean = await existingUser.comparePassword(password);
     if (!passwordsMatch) {
-      throw new BadRequestError('Invalid credentials');
+      return next(new BadRequestError('Invalid credentials'));
     }
     const user: IUserDocument = await userService.getUserByAuthId(`${existingUser._id}`);
 
