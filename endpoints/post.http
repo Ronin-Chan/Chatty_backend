@@ -9,7 +9,7 @@ Accept: application/json
 withCredentials: true
 
 {
-  "post" : "Yuhao Chen",
+  "post" : "Yuhao Chen1111",
   "bgColor" : "blue",
   "feelings" : "happy",
   "gifUrl" : "",
@@ -59,7 +59,7 @@ withCredentials: true
 
 {
   "post" : "updated post",
-  "bgColor" : "red",
+  "bgColor" : "green",
   "feelings" : "happy",
   "gifUrl" : "",
   "profilePicture" : "",
@@ -76,7 +76,7 @@ withCredentials: true
 
 {
   "post" : "updated post with image",
-  "bgColor" : "red",
+  "bgColor" : "blue",
   "feelings" : "happy",
   "gifUrl" : "",
   "profilePicture" : "",

@@ -41,7 +41,6 @@ class PostWorker {
       done(error as Error);
     }
   }
-
 }
 
 export const postWorker: PostWorker = new PostWorker();

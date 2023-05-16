@@ -6,7 +6,7 @@ import HTTP_STATUS from 'http-status-codes';
 
 const postCache: PostCache = new PostCache();
 
-export class DeletePost{
+export class DeletePost {
   public async deletePost(req: Request, res: Response): Promise<void> {
     postSocketIOObject.emit('delete post', req.params.postId);
     await postCache.deletePostFromCache(req.params.postId, `${req.currentUser!.userId}`);

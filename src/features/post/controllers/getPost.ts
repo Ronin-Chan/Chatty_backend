@@ -7,8 +7,8 @@ import { postService } from '@service/db/post.service';
 const postCache: PostCache = new PostCache();
 const PAGE_SIZE = 10;
 
-export class GetPost{
-  public async getPosts(req: Request, res: Response): Promise<void>{
+export class GetPost {
+  public async getPosts(req: Request, res: Response): Promise<void> {
     const { page } = req.params;
     const skip: number = (parseInt(page) - 1) * PAGE_SIZE; //mongodb 0 - 10, 10 - 20
     const limit: number = parseInt(page) * PAGE_SIZE;
@@ -19,11 +19,11 @@ export class GetPost{
     let totalPosts = 0;
     const cachePosts: IPostDocument[] = await postCache.getPostsFromCache('post', start, end);
 
-    if(cachePosts.length > 0){
+    if (cachePosts.length > 0) {
       posts = cachePosts;
       totalPosts = await postCache.getTotalPostsInCache();
-    }else{
-      posts =  await postService.getPosts({}, skip, limit, {createdAt: -1});
+    } else {
+      posts = await postService.getPosts({}, skip, limit, { createdAt: -1 });
       totalPosts = await postService.postsCount();
     }
 

@@ -60,7 +60,7 @@ describe('UpdatePost', () => {
       updatedPostWithImage.image = 'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==';
       const req: Request = postMockRequest(updatedPostWithImage, authUserPayload, { postId: `${postMockData._id}` }) as Request;
       const res: Response = postMockResponse();
-      const postSpy = jest.spyOn(PostCache.prototype, 'updatePostInCache');
+      const postSpy = jest.spyOn(PostCache.prototype, 'updatePostInCache').mockResolvedValue(postMockData);
       jest.spyOn(postServer.postSocketIOObject, 'emit');
       jest.spyOn(postQueue, 'addPostJob');
 
@@ -83,7 +83,7 @@ describe('UpdatePost', () => {
       updatedPostWithImage.image = 'data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==';
       const req: Request = postMockRequest(updatedPostWithImage, authUserPayload, { postId: `${postMockData._id}` }) as Request;
       const res: Response = postMockResponse();
-      const postSpy = jest.spyOn(PostCache.prototype, 'updatePostInCache');
+      const postSpy = jest.spyOn(PostCache.prototype, 'updatePostInCache').mockResolvedValue(postMockData);
       jest.spyOn(cloudinaryUploads, 'uploads').mockImplementation((): any => Promise.resolve({ version: '1234', public_id: '123456' }));
       jest.spyOn(postServer.postSocketIOObject, 'emit');
       jest.spyOn(postQueue, 'addPostJob');
