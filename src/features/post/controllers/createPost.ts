@@ -13,9 +13,9 @@ import { uploads } from '@global/helpers/cloudinaryUpload';
 
 const postCache: PostCache = new PostCache();
 
-export class CreatePost{
+export class CreatePost {
   @joiValidation(postSchema)
-  public async create(req: Request, res: Response): Promise<void>{
+  public async create(req: Request, res: Response): Promise<void> {
     const { post, bgColor, feelings, gifUrl, profilePicture, privacy } = req.body;
 
     const postObjectId: ObjectId = new ObjectId();
@@ -57,11 +57,11 @@ export class CreatePost{
     await postCache.savePostToCache(postData);
     postQueue.addPostJob('addPostToDB', { key: req.currentUser!.userId, value: createdPost });
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'Post created successfully'});
+    res.status(HTTP_STATUS.CREATED).json({ message: 'Post created successfully' });
   }
 
   @joiValidation(postWithImageSchema)
-  public async createWithImage(req: Request, res: Response, next: NextFunction): Promise<void>{
+  public async createWithImage(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { post, bgColor, feelings, gifUrl, profilePicture, privacy, image } = req.body;
 
     const result: UploadApiResponse = (await uploads(image)) as UploadApiResponse;
@@ -108,7 +108,6 @@ export class CreatePost{
     await postCache.savePostToCache(postData);
     postQueue.addPostJob('addPostToDB', { key: req.currentUser!.userId, value: createdPost });
 
-    res.status(HTTP_STATUS.CREATED).json({ message: 'Post created with image successfully'});
+    res.status(HTTP_STATUS.CREATED).json({ message: 'Post created with image successfully' });
   }
-
 }

@@ -2,8 +2,7 @@ import { IPostJobData } from '@post/interfaces/post.interface';
 import { BaseQueue } from '@service/queues/base.queue';
 import { postWorker } from '@worker/post.worker';
 
-
-class PostQueue extends BaseQueue{
+class PostQueue extends BaseQueue {
   constructor() {
     super('post');
     this.processJob('addPostToDB', 5, postWorker.addPostToDB);
@@ -11,7 +10,6 @@ class PostQueue extends BaseQueue{
     this.processJob('updatePostInDB', 5, postWorker.updatePostInDB);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public addPostJob(name: string, data: IPostJobData): void {
     this.addJob(name, data);
   }

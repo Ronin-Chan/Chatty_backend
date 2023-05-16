@@ -5,14 +5,14 @@ import { GetPost } from '@post/controllers/getPost';
 import { UpdatePost } from '@post/controllers/updatePost';
 import express, { Router } from 'express';
 
-class PostRoutes{
+class PostRoutes {
   private router: Router;
 
   constructor() {
     this.router = express.Router();
   }
 
-  public routes(): Router{
+  public routes(): Router {
     this.router.get('/post/all/:page', authMiddleware.checkAuthentication, GetPost.prototype.getPosts);
     this.router.get('/post/images/:page', authMiddleware.checkAuthentication, GetPost.prototype.getPostsWithImages);
 

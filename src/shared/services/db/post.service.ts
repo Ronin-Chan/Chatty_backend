@@ -4,19 +4,18 @@ import { IUserDocument } from '@user/interfaces/user.interface';
 import { UserModel } from '@user/models/user.schema';
 import { Query, UpdateQuery } from 'mongoose';
 
-
-class PostService{
-  public async createPost(userId: string ,createdPost: IPostDocument): Promise<void> {
+class PostService {
+  public async createPost(userId: string, createdPost: IPostDocument): Promise<void> {
     const post: Promise<IPostDocument> = PostModel.create(createdPost);
     const user: UpdateQuery<IUserDocument> = UserModel.updateOne({ _id: userId }, { $inc: { postsCount: 1 } });
     await Promise.all([post, user]);
   }
 
-  public async getPosts(query: IGetPostsQuery, skip: number, limit: number, sort: Record<string, 1 | -1>): Promise<IPostDocument[]>{
+  public async getPosts(query: IGetPostsQuery, skip: number, limit: number, sort: Record<string, 1 | -1>): Promise<IPostDocument[]> {
     let postQuery = {};
-    if(query?.gifUrl && query?.imgId){
-      postQuery = { $or: [{ gifUrl: { ne: '' } }, { imgId: { $ne: '' } }] };
-    }else{
+    if (query?.gifUrl && query?.imgId) {
+      postQuery = { $or: [{ gifUrl: { $ne: '' } }, { imgId: { $ne: '' } }] };
+    } else {
       postQuery = query;
     }
 
@@ -29,7 +28,7 @@ class PostService{
     return posts;
   }
 
-  public async postsCount(): Promise<number>{
+  public async postsCount(): Promise<number> {
     const count: number = await PostModel.find({}).countDocuments(); //find all and then count
     return count;
   }
@@ -41,11 +40,11 @@ class PostService{
     await Promise.all([deletePost, decrementPostCount]);
   }
 
-  public async updatePost(postId: string, updatedPost: IPostDocument): Promise<void>{
-    const updatePost: UpdateQuery<IPostDocument> = PostModel.updateOne({ _id: postId }, { $set: { updatedPost } });
+  public async updatePost(postId: string, updatedPost: IPostDocument): Promise<void> {
+    console.log(updatedPost);
+    const updatePost: UpdateQuery<IPostDocument> = PostModel.updateOne({ _id: postId }, { $set: updatedPost });
     await Promise.all([updatePost]);
   }
-
 }
 
 export const postService: PostService = new PostService();

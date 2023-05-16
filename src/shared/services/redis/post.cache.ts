@@ -1,10 +1,11 @@
 import { ServerError } from '@global/helpers/errorHandler';
 import { Helpers } from '@global/helpers/helpers';
-import { IPostDocument, IReactions, ISavePostToCache } from '@post/interfaces/post.interface';
+import { IPostDocument, ISavePostToCache } from '@post/interfaces/post.interface';
 import { config } from '@root/config';
 import { BaseCache } from '@service/redis/base.cache';
 import Logger from 'bunyan';
 import { RedisCommandRawReply } from '@redis/client/dist/lib/commands';
+import { IReactions } from '@reaction/interfaces/reaction.interface';
 
 const log: Logger = config.createLogger('postCache');
 export type PostCacheMultiType = string | number | Buffer | RedisCommandRawReply[] | IPostDocument | IPostDocument[];
@@ -75,7 +76,7 @@ export class PostCache extends BaseCache {
     const dataToSave: string[] = [...firstList, ...secondList];
 
     try {
-      if(!this.client.isOpen){
+      if (!this.client.isOpen) {
         await this.client.connect();
       }
 
@@ -90,15 +91,13 @@ export class PostCache extends BaseCache {
       multi.HSET(`posts:${key}`, 'postsCount', count);
 
       multi.exec();
-
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');
     }
-
   }
 
-  public async getPostsFromCache(key: string, start: number, end: number): Promise<IPostDocument[]>{
+  public async getPostsFromCache(key: string, start: number, end: number): Promise<IPostDocument[]> {
     try {
       if (!this.client.isOpen) {
         await this.client.connect();
@@ -106,12 +105,13 @@ export class PostCache extends BaseCache {
 
       const result: string[] = await this.client.ZRANGE(key, start, end); //windows can't use REV
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
-      for (let i = result.length - 1; i >= 0; i--) { //reverse to get lastest
+      for (let i = result.length - 1; i >= 0; i--) {
+        //reverse to get lastest
         multi.HGETALL(`posts:${result[i]}`);
       }
       const results: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
       const postResults: IPostDocument[] = [];
-      for(const post of results as IPostDocument[]){
+      for (const post of results as IPostDocument[]) {
         post.commentsCount = Helpers.customJsonParse(`${post.commentsCount}`) as number;
         post.reactions = Helpers.customJsonParse(`${post.reactions}`) as IReactions;
         post.createdAt = new Date(Helpers.customJsonParse(`${post.createdAt}`)) as Date;
@@ -119,7 +119,6 @@ export class PostCache extends BaseCache {
       }
 
       return postResults;
-
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');
@@ -134,13 +133,15 @@ export class PostCache extends BaseCache {
 
       const result: string[] = await this.client.ZRANGE(key, start, end); //windows can't use REV
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
-      for (let i = result.length - 1; i >= 0; i--) { //reverse to get lastest
+      for (let i = result.length - 1; i >= 0; i--) {
+        //reverse to get lastest
         multi.HGETALL(`posts:${result[i]}`);
       }
       const results: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
       const postWithImages: IPostDocument[] = [];
       for (const post of results as IPostDocument[]) {
-        if ((post.imgId && post.imgVersion) || post.gifUrl) { //if those porpeties exist - true
+        if ((post.imgId && post.imgVersion) || post.gifUrl) {
+          //if those porpeties exist - true
           post.commentsCount = Helpers.customJsonParse(`${post.commentsCount}`) as number;
           post.reactions = Helpers.customJsonParse(`${post.reactions}`) as IReactions;
           post.createdAt = new Date(Helpers.customJsonParse(`${post.createdAt}`)) as Date;
@@ -149,14 +150,13 @@ export class PostCache extends BaseCache {
       }
 
       return postWithImages;
-
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');
     }
   }
 
-  public async getTotalPostsInCache(): Promise<number>{
+  public async getTotalPostsInCache(): Promise<number> {
     try {
       if (!this.client.isOpen) {
         await this.client.connect();
@@ -165,7 +165,6 @@ export class PostCache extends BaseCache {
       const count: number = await this.client.ZCARD('post');
 
       return count;
-
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');
@@ -213,7 +212,7 @@ export class PostCache extends BaseCache {
     }
   }
 
-  public async deletePostFromCache(postId: string, currentUserId: string): Promise<void>{
+  public async deletePostFromCache(postId: string, currentUserId: string): Promise<void> {
     try {
       if (!this.client.isOpen) {
         await this.client.connect();
@@ -228,14 +227,13 @@ export class PostCache extends BaseCache {
       const count: number = parseInt(postCount[0], 10) - 1;
       multi.HSET(`users:${currentUserId}`, 'postsCount', count);
       await multi.exec();
-
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');
     }
   }
 
-  public async updatePostInCache(key: string, updatedpost: IPostDocument): Promise<IPostDocument>{
+  public async updatePostInCache(key: string, updatedpost: IPostDocument): Promise<IPostDocument> {
     const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, profilePicture } = updatedpost;
     const dataToSave: string[] = [
       'post',
@@ -253,10 +251,10 @@ export class PostCache extends BaseCache {
       'imgId',
       `${imgId}`,
       'profilePicture',
-      `${profilePicture}`,
+      `${profilePicture}`
     ];
     try {
-      if(!this.client.isOpen){
+      if (!this.client.isOpen) {
         await this.client.connect();
       }
       // await this.client.HSET(`posts:${key}`, dataToSave);
@@ -266,13 +264,13 @@ export class PostCache extends BaseCache {
 
       const multi: ReturnType<typeof this.client.multi> = this.client.multi();
       multi.HGETALL(`posts:${key}`);
-      const result: PostCacheMultiType = await multi.exec() as PostCacheMultiType;
-      const postResult = result as IPostDocument;
-      postResult.commentsCount = Helpers.customJsonParse(`${postResult.commentsCount}`) as number;
-      postResult.reactions = Helpers.customJsonParse(`${postResult.reactions}`) as IReactions;
-      postResult.createdAt = Helpers.customJsonParse(`${postResult.createdAt}`) as Date;
+      const result: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
+      const postResult = result as IPostDocument[];
+      postResult[0].commentsCount = Helpers.customJsonParse(`${postResult[0].commentsCount}`) as number;
+      postResult[0].reactions = Helpers.customJsonParse(`${postResult[0].reactions}`) as IReactions;
+      postResult[0].createdAt = Helpers.customJsonParse(`${postResult[0].createdAt}`) as Date;
 
-      return postResult;
+      return postResult[0];
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');

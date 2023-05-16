@@ -12,9 +12,9 @@ import HTTP_STATUS from 'http-status-codes';
 
 const postCache: PostCache = new PostCache();
 
-export class UpdatePost{
+export class UpdatePost {
   @joiValidation(postSchema)
-  public async updatePost(req: Request, res: Response): Promise<void>{
+  public async updatePost(req: Request, res: Response): Promise<void> {
     const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, profilePicture } = req.body;
     const { postId } = req.params;
     const updatedPost: IPostDocument = {
@@ -26,20 +26,19 @@ export class UpdatePost{
       imgVersion,
       imgId,
       profilePicture
-    } as IPostDocument ;
+    } as IPostDocument;
     const updatedPostData: IPostDocument = await postCache.updatePostInCache(postId, updatedPost);
     postSocketIOObject.emit('update post', updatedPostData, 'posts');
     postQueue.addPostJob('updatePostInDB', { key: postId, value: updatedPostData });
     res.status(HTTP_STATUS.OK).json({ message: 'Post updated successfully' });
-
   }
 
   @joiValidation(postWithImageSchema)
-  public async updatePostWithImage(req: Request, res: Response, next: NextFunction): Promise<void>{
+  public async updatePostWithImage(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { imgVersion, imgId } = req.body;
-    if(imgId && imgVersion){
+    if (imgId && imgVersion) {
       UpdatePost.prototype.updatePostFn(req);
-    }else{
+    } else {
       const result: UploadApiResponse = await UpdatePost.prototype.updatePostWithImgFn(req);
       if (!result?.public_id) {
         return next(new BadRequestError(result.message));
@@ -49,7 +48,7 @@ export class UpdatePost{
     res.status(HTTP_STATUS.OK).json({ message: 'Post with image updated successfully' });
   }
 
-  private async updatePostFn(req: Request): Promise<void>{
+  private async updatePostFn(req: Request): Promise<void> {
     const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, profilePicture } = req.body;
     const { postId } = req.params;
     const updatedPost: IPostDocument = {
@@ -61,14 +60,13 @@ export class UpdatePost{
       imgVersion,
       imgId,
       profilePicture
-    } as IPostDocument ;
+    } as IPostDocument;
     const updatedPostData: IPostDocument = await postCache.updatePostInCache(postId, updatedPost);
     postSocketIOObject.emit('update post', updatedPostData, 'posts');
     postQueue.addPostJob('updatePostInDB', { key: postId, value: updatedPostData });
-
   }
 
-  private async updatePostWithImgFn(req: Request): Promise<UploadApiResponse>{
+  private async updatePostWithImgFn(req: Request): Promise<UploadApiResponse> {
     const { post, bgColor, feelings, privacy, gifUrl, profilePicture, image } = req.body;
     const { postId } = req.params;
     const result: UploadApiResponse = (await uploads(image)) as UploadApiResponse;
@@ -83,15 +81,12 @@ export class UpdatePost{
       gifUrl,
       imgVersion: result.version.toString(),
       imgId: result.public_id,
-      profilePicture,
-    } as IPostDocument ;
+      profilePicture
+    } as IPostDocument;
     const updatedPostData: IPostDocument = await postCache.updatePostInCache(postId, updatedPost);
     postSocketIOObject.emit('update post', updatedPostData, 'posts');
     postQueue.addPostJob('updatePostInDB', { key: postId, value: updatedPostData });
 
     return result;
-
   }
-
-
 }
