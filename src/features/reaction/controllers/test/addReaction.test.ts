@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { authUserPayload } from '@root/mocks/auth.mock';
-import { reactionMockRequest, reactionMockResponse } from '@root/mocks/reactions.mock';
+import { reactionMockRequest, reactionMockResponse } from '@root/mocks/reaction.mock';
 import { ReactionCache } from '@service/redis/reaction.cache';
 import { reactionQueue } from '@service/queues/reaction.queue';
 import { AddReaction } from '@reaction/controllers/addReaction';

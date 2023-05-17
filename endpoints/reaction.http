@@ -9,11 +9,11 @@ Accept: application/json
 withCredentials: true
 
 {
-  "postId" : "645b4c0fff825ced1b3f4345",
-  "type" : "wow",
+  "postId" : "645b4c17ff825ced1b3f4349",
+  "type" : "like",
   "userTo": "6457420d42a04b9d07142839",
   "previousReaction" : "",
-  "postReactions" : {"like": 0,"love": 0,"happy": 0,"sad": 0,"wow": 1,"angry": 0},
+  "postReactions" : {"like": 1,"love": 0,"happy": 0,"sad": 0,"wow": 0,"angry": 0},
   "profilePicture" : ""
 }
 
@@ -37,14 +37,11 @@ Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
-{}
-
 ###
 GET {{baseUrl}}/{{urlPath}}/post/reactions/username/Ronin
 Content-Type: application/json
 Accept: application/json
 withCredentials: true
 
-{}
 
 
