@@ -27,6 +27,8 @@
       "@auth/*": ["src/features/auth/*"],
       "@post/*": ["src/features/post/*"],
       "@reaction/*": ["src/features/reaction/*"],
+      "@block/*": ["src/features/block/*"],
+      "@follow/*": ["src/features/follow/*"],
       "@comment/*": ["src/features/comment/*"],
       "@user/*": ["src/features/user/*"],
       "@global/*": ["src/shared/globals/*"],
