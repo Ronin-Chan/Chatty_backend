@@ -1,3 +1,4 @@
+import { notificationRoutes } from '@notification/routes/notificationRoutes';
 import { authRoutes } from '@auth/routes/authRoutes';
 import { currentUserRoutes } from '@auth/routes/currentUserRoutes';
 import { blockRoutes } from '@block/routes/blockRoutes';
@@ -23,6 +24,7 @@ export default (app: Application) => {
     app.use(BASE_PATH, authMiddleware.verify, commentRoutes.routes());
     app.use(BASE_PATH, authMiddleware.verify, followRoutes.routes());
     app.use(BASE_PATH, authMiddleware.verify, blockRoutes.routes());
+    app.use(BASE_PATH, authMiddleware.verify, notificationRoutes.routes());
   };
 
   routes();

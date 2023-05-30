@@ -9,9 +9,9 @@ Accept: application/json
 withCredentials: true
 
 {
-  "postId" : "645b4c17ff825ced1b3f4349",
+  "postId" : "64745c9660c7315a1c231624",
   "type" : "like",
-  "userTo": "6457420d42a04b9d07142839",
+  "userTo": "646e08ba753161ea9ae8b59a",
   "previousReaction" : "",
   "postReactions" : {"like": 1,"love": 0,"happy": 0,"sad": 0,"wow": 0,"angry": 0},
   "profilePicture" : ""
