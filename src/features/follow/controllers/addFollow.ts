@@ -14,7 +14,7 @@ const userCache: UserCache = new UserCache();
 
 export class AddFollow{
   //current user as follower
-  //follower is someone follow others
+  //follower is someone who follows others
   public async addFollow(req: Request, res: Response): Promise<void>{
     const { followeeId } = req.params;
 

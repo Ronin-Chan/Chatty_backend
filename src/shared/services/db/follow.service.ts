@@ -1,8 +1,13 @@
 import { IFollowData } from '@follow/interfaces/follow.interface';
 import { IFollowDocument } from '@follow/interfaces/follow.interface';
 import { FollowModel } from '@follow/models/follow.schema';
+import { INotificationDocument, INotificationTemplate } from '@notification/interfaces/notification.interface';
+import { NotificationModel } from '@notification/models/notification.schema';
 import { IQueryComplete, IQueryDeleted } from '@post/interfaces/post.interface';
+import { notificationTemplate } from '@service/emails/templates/notifications/notification-template';
+import { emailQueue } from '@service/queues/email.queue';
 import { UserCache } from '@service/redis/user.cache';
+import { notificationSocketIOObject } from '@socket/notification.socket';
 import { IUserDocument } from '@user/interfaces/user.interface';
 import { UserModel } from '@user/models/user.schema';
 import { ObjectId, BulkWriteResult } from 'mongodb';
@@ -35,6 +40,33 @@ class FollowService{
     ]);
 
     const result: [BulkWriteResult, IUserDocument | null] = await Promise.all([users, userCache.getUserFromCache(followeeId)]);
+
+    if(result[1]?.notifications.follows && userId != followeeId){
+      const notificationModel: INotificationDocument = new NotificationModel();
+      const notifications = await notificationModel.insertNotification({
+        userFrom: userId,
+        userTo: followeeId,
+        message: `${username} is following you.`,
+        notificationType: 'follows',
+        entityId: new mongoose.Types.ObjectId(userId),
+        createdItemId: new mongoose.Types.ObjectId(follow._id),
+        createdAt: new Date(),
+        comment: '',
+        post: '',
+        imgId: '',
+        imgVersion: '',
+        gifUrl: '',
+        reaction: ''
+      });
+      notificationSocketIOObject.emit('insert notification', notifications, { followeeId });
+      const templateParams: INotificationTemplate = {
+        username: result[1].username!, //followee's username
+        message: `${username} is following you.`,
+        header: 'Follow Notification'
+      };
+      const template: string = notificationTemplate.notificationMessageTemplate(templateParams);
+      emailQueue.addEmailJob('followEmail', { receiverEmail: result[1].email!, template, subject: 'Follow notification' });
+    }
   }
 
   public async removeFollowerFromDB(followeeId: string, userId: string): Promise<void> {
