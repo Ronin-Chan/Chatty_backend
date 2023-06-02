@@ -3,6 +3,7 @@ import { uploads } from '@global/helpers/cloudinaryUpload';
 import { BadRequestError } from '@global/helpers/errorHandler';
 import { IPostDocument } from '@post/interfaces/post.interface';
 import { postSchema, postWithImageSchema } from '@post/schemes/post.schemes';
+import { imageQueue } from '@service/queues/image.queue';
 import { postQueue } from '@service/queues/post.queue';
 import { PostCache } from '@service/redis/post.cache';
 import { postSocketIOObject } from '@socket/post.socket';
@@ -86,6 +87,7 @@ export class UpdatePost {
     const updatedPostData: IPostDocument = await postCache.updatePostInCache(postId, updatedPost);
     postSocketIOObject.emit('update post', updatedPostData, 'posts');
     postQueue.addPostJob('updatePostInDB', { key: postId, value: updatedPostData });
+    imageQueue.addImageJob('addImageToDB', { userId: `${req.currentUser!.userId}`, imgId: result.public_id, imgVersion: result.version.toString() });
 
     return result;
   }

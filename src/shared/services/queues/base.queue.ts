@@ -12,8 +12,9 @@ import { ICommentJob } from '@comment/interfaces/comment.interface';
 import { IFollowJobData } from '@follow/interfaces/follow.interface';
 import { IBlockJobData } from '@root/features/block/interfaces/block.interface';
 import { INotificationJobData } from '@notification/interfaces/notification.interface';
+import { IFileImageJobData } from '@image/interfaces/image.interface';
 
-type IBaseJobData = IAuthJob | IEmailJob | IPostJobData | IReactionJob | ICommentJob | IFollowJobData | IBlockJobData | INotificationJobData;
+type IBaseJobData = IAuthJob | IEmailJob | IPostJobData | IReactionJob | ICommentJob | IFollowJobData | IBlockJobData | INotificationJobData | IFileImageJobData;
 
 let bullAdapters: BullAdapter[] = [];
 

@@ -30,6 +30,7 @@
       "@block/*": ["src/features/block/*"],
       "@follow/*": ["src/features/follow/*"],
       "@notification/*": ["src/features/notification/*"],
+      "@image/*": ["src/features/image/*"],
       "@comment/*": ["src/features/comment/*"],
       "@user/*": ["src/features/user/*"],
       "@global/*": ["src/shared/globals/*"],
