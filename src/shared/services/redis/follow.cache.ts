@@ -79,5 +79,4 @@ export class FollowCache extends BaseCache {
       throw new ServerError('Server error. Try again.');
     }
   }
-
 }

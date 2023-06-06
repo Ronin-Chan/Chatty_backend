@@ -5,10 +5,10 @@ import { followQueue } from '@service/queues/follow.queue';
 
 const followCache: FollowCache = new FollowCache();
 
-export class RemoveFollow{
+export class RemoveFollow {
   //current user as follower
   //follower is someone follow others
-  public async removeFollow(req: Request, res: Response): Promise<void>{
+  public async removeFollow(req: Request, res: Response): Promise<void> {
     const { followeeId } = req.params;
 
     //remove follower or followee from redis
@@ -26,5 +26,4 @@ export class RemoveFollow{
 
     res.status(HTTP_STATUS.OK).json({ message: 'Unfollow user successfully' });
   }
-
 }

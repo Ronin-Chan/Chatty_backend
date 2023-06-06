@@ -9,17 +9,17 @@ import HTTP_STATUS from 'http-status-codes';
 
 const userCache: UserCache = new UserCache();
 
-export class DeleteImage{
+export class DeleteImage {
   //use id to directly delete image docunment from mongodb - _id
   //post's image
-  public async deleteImage(req: Request, res: Response): Promise<void>{
+  public async deleteImage(req: Request, res: Response): Promise<void> {
     const { imageId } = req.params;
     imageSocketIOObject.emit('delete image', imageId);
     imageQueue.addImageJob('removeImageFromDB', {
       imageId
     });
     res.status(HTTP_STATUS.OK).json({ message: 'Image deleted successfully' });
-  };
+  }
 
   //use bgImageId to delete image document - bgImageId
   //but without setting two properties as empty string in user document
@@ -55,5 +55,3 @@ export class DeleteImage{
     res.status(HTTP_STATUS.OK).json({ message: 'Image deleted successfully' });
   }
 }
-
-

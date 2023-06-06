@@ -2,8 +2,8 @@ import { INotificationDocument } from '@notification/interfaces/notification.int
 import { NotificationModel } from '@notification/models/notification.schema';
 import mongoose from 'mongoose';
 
-class NotificationService{
-  public async getNotifications(userId: string): Promise<INotificationDocument[]>{
+class NotificationService {
+  public async getNotifications(userId: string): Promise<INotificationDocument[]> {
     const notifications: INotificationDocument[] = await NotificationModel.aggregate([
       { $match: { userTo: new mongoose.Types.ObjectId(userId) } },
       { $lookup: { from: 'User', localField: 'userFrom', foreignField: '_id', as: 'userFrom' } },
@@ -36,22 +36,17 @@ class NotificationService{
       }
     ]);
     return notifications;
-  };
+  }
 
-  public async updateNotificationInDB(notificationId: string): Promise<void>{
-    NotificationModel.updateOne(
-      { _id: notificationId },
-      { $set: { read: true } }
-    ).exec();
-  };
+  public async updateNotificationInDB(notificationId: string): Promise<void> {
+    NotificationModel.updateOne({ _id: notificationId }, { $set: { read: true } }).exec();
+  }
 
-  public async deleteNotificationFromDB(notificationId: string): Promise<void>{
-    NotificationModel.deleteOne(
-      { _id: notificationId },
-    ).exec();
-  };
+  public async deleteNotificationFromDB(notificationId: string): Promise<void> {
+    NotificationModel.deleteOne({ _id: notificationId }).exec();
+  }
 
-  public async getNotificationFromDB(userId: string): Promise<INotificationDocument[]>{
+  public async getNotificationFromDB(userId: string): Promise<INotificationDocument[]> {
     const notifications: INotificationDocument[] = await NotificationModel.aggregate([
       { $match: { userTo: new mongoose.Types.ObjectId(userId) } },
       { $lookup: { from: 'User', localField: 'userFrom', foreignField: '_id', as: 'userFrom' } },
@@ -84,9 +79,7 @@ class NotificationService{
       }
     ]);
     return notifications;
-  };
-
-
+  }
 }
 
 export const notificationService: NotificationService = new NotificationService();

@@ -3,21 +3,18 @@ import { ImageModel } from '@image/models/image.schema';
 import { UserModel } from '@user/models/user.schema';
 import mongoose from 'mongoose';
 
-class ImageService{
-  public async addProfileImageToDB(userId: string, imgId: string, imgVersion: string, url: string): Promise<void>{
+class ImageService {
+  public async addProfileImageToDB(userId: string, imgId: string, imgVersion: string, url: string): Promise<void> {
     await UserModel.updateOne({ _id: userId }, { $set: { profilePicture: url } }).exec();
     await this.addImageToDB(userId, imgId, imgVersion, 'profile');
   }
 
-  public async addBgImageToDB(userId: string, imgId: string, imgVersion: string): Promise<void>{
-    await UserModel.updateOne(
-      { _id: userId },
-      { $set: { bgImageVersion: imgVersion, bgImageId: imgId } }
-    );
+  public async addBgImageToDB(userId: string, imgId: string, imgVersion: string): Promise<void> {
+    await UserModel.updateOne({ _id: userId }, { $set: { bgImageVersion: imgVersion, bgImageId: imgId } });
     this.addImageToDB(userId, imgId, imgVersion, 'background');
   }
 
-  public async addImageToDB(userId: string, imgId: string, imgVersion: string, type: string): Promise<void>{
+  public async addImageToDB(userId: string, imgId: string, imgVersion: string, type: string): Promise<void> {
     await ImageModel.create({
       userId,
       bgImageVersion: type === 'background' ? imgVersion : '',
@@ -29,10 +26,8 @@ class ImageService{
     });
   }
 
-  public async removeImageFromDB(imageId: string): Promise<void>{
-    await ImageModel.deleteOne(
-      { _id: imageId },
-    ).exec();
+  public async removeImageFromDB(imageId: string): Promise<void> {
+    await ImageModel.deleteOne({ _id: imageId }).exec();
   }
 
   public async getBgImageFromDB(bgImageId: string): Promise<IFileImageDocument> {

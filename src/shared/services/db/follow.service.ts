@@ -15,9 +15,8 @@ import mongoose, { Query } from 'mongoose';
 
 const userCache: UserCache = new UserCache();
 
-class FollowService{
-  public async addFollowToDB(userId: string, followeeId: string, username: string, followDocumentId: ObjectId): Promise<void>{
-
+class FollowService {
+  public async addFollowToDB(userId: string, followeeId: string, username: string, followDocumentId: ObjectId): Promise<void> {
     const follow = await FollowModel.create({
       _id: followDocumentId,
       followeeId: new mongoose.Types.ObjectId(followeeId),
@@ -41,7 +40,7 @@ class FollowService{
 
     const result: [BulkWriteResult, IUserDocument | null] = await Promise.all([users, userCache.getUserFromCache(followeeId)]);
 
-    if(result[1]?.notifications.follows && userId != followeeId){
+    if (result[1]?.notifications.follows && userId != followeeId) {
       const notificationModel: INotificationDocument = new NotificationModel();
       const notifications = await notificationModel.insertNotification({
         userFrom: userId,
@@ -70,11 +69,9 @@ class FollowService{
   }
 
   public async removeFollowerFromDB(followeeId: string, userId: string): Promise<void> {
-
     const unfollow: Query<IQueryComplete & IQueryDeleted, IFollowDocument> = FollowModel.deleteOne({
       followeeId: new mongoose.Types.ObjectId(followeeId),
       followerId: new mongoose.Types.ObjectId(userId)
-
     });
 
     const users: Promise<BulkWriteResult> = UserModel.bulkWrite([
@@ -95,7 +92,7 @@ class FollowService{
     await Promise.all([unfollow, users]);
   }
 
-  public async getFolloweeFromDB(id: ObjectId): Promise<IFollowData[]>{
+  public async getFolloweeFromDB(id: ObjectId): Promise<IFollowData[]> {
     const followee: IFollowData[] = await FollowModel.aggregate([
       { $match: { followerId: id } },
       { $lookup: { from: 'User', localField: 'followeeId', foreignField: '_id', as: 'followee' } },
@@ -128,7 +125,7 @@ class FollowService{
     return followee;
   }
 
-  public async getFollowerFromDB(id: ObjectId): Promise<IFollowData[]>{
+  public async getFollowerFromDB(id: ObjectId): Promise<IFollowData[]> {
     const follower: IFollowData[] = await FollowModel.aggregate([
       { $match: { followeeId: id } },
       { $lookup: { from: 'User', localField: 'followerId', foreignField: '_id', as: 'follower' } },

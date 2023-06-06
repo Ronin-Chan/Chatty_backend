@@ -67,7 +67,7 @@ class ReactionService {
       };
       const template: string = notificationTemplate.notificationMessageTemplate(templateParams);
       emailQueue.addEmailJob('reactionEmail', { receiverEmail: result[0].email!, template, subject: 'Post reaction notification' });
-    };
+    }
   }
 
   public async removeReactionFromDB(reactionData: IReactionJob): Promise<void> {

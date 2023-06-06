@@ -53,9 +53,6 @@ class ImageWorker {
       done(error as Error);
     }
   }
-
-
 }
 
 export const imageWorker: ImageWorker = new ImageWorker();
-
