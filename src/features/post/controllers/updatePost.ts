@@ -87,7 +87,11 @@ export class UpdatePost {
     const updatedPostData: IPostDocument = await postCache.updatePostInCache(postId, updatedPost);
     postSocketIOObject.emit('update post', updatedPostData, 'posts');
     postQueue.addPostJob('updatePostInDB', { key: postId, value: updatedPostData });
-    imageQueue.addImageJob('addImageToDB', { userId: `${req.currentUser!.userId}`, imgId: result.public_id, imgVersion: result.version.toString() });
+    imageQueue.addImageJob('addImageToDB', {
+      userId: `${req.currentUser!.userId}`,
+      imgId: result.public_id,
+      imgVersion: result.version.toString()
+    });
 
     return result;
   }

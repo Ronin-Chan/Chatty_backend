@@ -12,10 +12,10 @@ import { followQueue } from '@service/queues/follow.queue';
 const followCache: FollowCache = new FollowCache();
 const userCache: UserCache = new UserCache();
 
-export class AddFollow{
+export class AddFollow {
   //current user as follower
   //follower is someone who follows others
-  public async addFollow(req: Request, res: Response): Promise<void>{
+  public async addFollow(req: Request, res: Response): Promise<void> {
     const { followeeId } = req.params;
 
     //update count
@@ -58,5 +58,4 @@ export class AddFollow{
       userProfile: user
     };
   }
-
 }

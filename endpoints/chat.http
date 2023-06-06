@@ -1,0 +1,85 @@
+@baseUrl = http://localhost:5000
+
+@urlPath = api/v1
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/message
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "conversationId" : "",
+  "receiverId" : "646e0840753161ea9ae8b590",
+  "receiverUsername" : "Ronin",
+  "receiverAvatarColor" : "red",
+  "receiverProfilePicture" : "https://res.cloudinary.com/dlohvpcwg/image/upload/v1684932673/646e0840753161ea9ae8b590",
+  "body" : "Hi",
+  "gifUrl" : "",
+  "isRead" : false,
+  "selectedImage" : ""
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/message/add-chat-users
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userOne" : "646e0831753161ea9ae8b589",
+  "userTwo" : "646e0840753161ea9ae8b590"
+}
+
+###
+POST {{baseUrl}}/{{urlPath}}/chat/message/remove-chat-users
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "userOne" : "646e0831753161ea9ae8b589",
+  "userTwo" : "646e0840753161ea9ae8b590"
+}
+
+###
+GET {{baseUrl}}/{{urlPath}}/chat/message/conversation-list
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/chat/message/user/646e0840753161ea9ae8b590
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+DELETE  {{baseUrl}}/{{urlPath}}/chat/message/mark-as-deleted/647c9af883852eaa77692a31/646e08ba753161ea9ae8b59a/646e0840753161ea9ae8b590/deleteForEveryOne
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+PUT {{baseUrl}}/{{urlPath}}/chat/message/mark-as-read
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "senderId" : "646e08ba753161ea9ae8b59a",
+  "receiverId" : "646e0840753161ea9ae8b590"
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/chat/message/reaction
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "conversationId" : "647c9af883852eaa77692a32",
+  "messageId" : "647c9af883852eaa77692a31",
+  "reaction" : "like",
+  "type" : "remove"
+}

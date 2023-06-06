@@ -34,7 +34,9 @@ describe('UpdateNotification', () => {
 
     await UpdateNotification.prototype.updateNotification(req, res);
     expect(notificationServer.notificationSocketIOObject.emit).toHaveBeenCalledWith('update notification', req.params.notificationId);
-    expect(notificationQueue.addNotificationJob).toHaveBeenCalledWith('updateNotificationInDB', { notificationId: req.params.notificationId });
+    expect(notificationQueue.addNotificationJob).toHaveBeenCalledWith('updateNotificationInDB', {
+      notificationId: req.params.notificationId
+    });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       message: 'Notification marked as read'

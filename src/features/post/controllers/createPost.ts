@@ -108,7 +108,11 @@ export class CreatePost {
 
     await postCache.savePostToCache(postData);
     postQueue.addPostJob('addPostToDB', { key: req.currentUser!.userId, value: createdPost });
-    imageQueue.addImageJob('addImageToDB', { userId: `${req.currentUser!.userId}`, imgId: result.public_id, imgVersion: result.version.toString() });
+    imageQueue.addImageJob('addImageToDB', {
+      userId: `${req.currentUser!.userId}`,
+      imgId: result.public_id,
+      imgVersion: result.version.toString()
+    });
 
     res.status(HTTP_STATUS.CREATED).json({ message: 'Post created with image successfully' });
   }

@@ -38,4 +38,3 @@ export interface IFollowJobData {
   username?: string;
   followDocumentId?: ObjectId;
 }
-

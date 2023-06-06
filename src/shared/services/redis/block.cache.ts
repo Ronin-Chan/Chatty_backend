@@ -7,7 +7,7 @@ import Logger from 'bunyan';
 
 const log: Logger = config.createLogger('blockCache');
 
-export class BlockCache extends BaseCache{
+export class BlockCache extends BaseCache {
   constructor() {
     super('blockCache');
   }
@@ -32,7 +32,6 @@ export class BlockCache extends BaseCache{
       }
       multi.HSET(`users:${key}`, `${prop}`, JSON.stringify(blocked));
       await multi.exec();
-
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');

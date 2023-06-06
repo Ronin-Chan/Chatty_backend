@@ -9,9 +9,9 @@ class BlockWorker {
   async updateBlockOrUnblockInDB(job: Job, done: DoneCallback): Promise<void> {
     try {
       const { userId, blockedUserId, type } = job.data;
-      if(type === 'block'){
+      if (type === 'block') {
         await blockService.updateBlockInDB(userId, blockedUserId);
-      }else{
+      } else {
         await blockService.updateUnBlockInDB(userId, blockedUserId);
       }
       done(null, job.data); //first param is error, successful so we pass in null

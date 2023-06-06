@@ -8,7 +8,7 @@ import { find } from 'lodash';
 
 const log: Logger = config.createLogger('commentCache');
 
-export class CommentCache extends BaseCache{
+export class CommentCache extends BaseCache {
   constructor() {
     super('commentCache');
   }
@@ -23,20 +23,19 @@ export class CommentCache extends BaseCache{
       const commentsCount: string[] = await this.client.HMGET(`posts:${postId}`, 'commentsCount');
       const count: number = parseInt(commentsCount[0], 10) + 1;
       await this.client.HSET(`posts:${postId}`, 'commentsCount', count);
-
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');
     }
   }
 
-  public async getCommentsFromCache(postId: string): Promise<ICommentDocument[]>{
+  public async getCommentsFromCache(postId: string): Promise<ICommentDocument[]> {
     try {
       if (!this.client.isOpen) {
         await this.client.connect();
       }
 
-      const result: string[] = await this.client.LRANGE(postId, 0 , -1);
+      const result: string[] = await this.client.LRANGE(postId, 0, -1);
       const commentResults: ICommentDocument[] = [];
       for (const comment of result) {
         commentResults.push(Helpers.customJsonParse(comment));

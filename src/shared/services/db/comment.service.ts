@@ -13,8 +13,8 @@ import mongoose, { Query } from 'mongoose';
 
 const userCache: UserCache = new UserCache();
 
-class CommentService{
-  public async addCommentToDB(commentData: ICommentJob): Promise<void>{
+class CommentService {
+  public async addCommentToDB(commentData: ICommentJob): Promise<void> {
     //username - req.currentUser!.username,
     const { postId, userTo, userFrom, comment, username } = commentData;
     //add comment
@@ -56,7 +56,7 @@ class CommentService{
       };
       const template: string = notificationTemplate.notificationMessageTemplate(templateParams);
       emailQueue.addEmailJob('commentsEmail', { receiverEmail: result[2].email!, template, subject: 'Post notification' });
-    };
+    }
   }
   /**
    * 1.get comments of single post - postId
@@ -64,16 +64,16 @@ class CommentService{
    * 2.get single comment of single post - commentId
    *
    */
-  public async getCommentsFromDB(query: IQueryComment, sort: Record<string, 1 | -1>): Promise<ICommentDocument[]>{
+  public async getCommentsFromDB(query: IQueryComment, sort: Record<string, 1 | -1>): Promise<ICommentDocument[]> {
     const comments: ICommentDocument[] = await CommentsModel.aggregate([{ $match: query }, { $sort: sort }]);
     return comments;
   }
 
   //get all usernames of all comments of single post
-  public async getCommentsNamesFromDB(query: IQueryComment, sort: Record<string, 1 | -1>): Promise<ICommentNameList[]>{
+  public async getCommentsNamesFromDB(query: IQueryComment, sort: Record<string, 1 | -1>): Promise<ICommentNameList[]> {
     //create two new properties: names, count
     //{ $sum: 1 } - everytime finds a new document, will increase by 1
-    const result: ICommentNameList[] =  await CommentsModel.aggregate([
+    const result: ICommentNameList[] = await CommentsModel.aggregate([
       { $match: query },
       { $sort: sort },
       { $group: { _id: null, names: { $addToSet: '$username' }, count: { $sum: 1 } } },
@@ -82,7 +82,6 @@ class CommentService{
 
     return result;
   }
-
 }
 
 export const commentService: CommentService = new CommentService();

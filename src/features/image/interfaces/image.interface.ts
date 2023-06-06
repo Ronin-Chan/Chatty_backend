@@ -16,7 +16,7 @@ export interface IFileImageJobData {
   imgVersion?: string;
   userId?: string;
   imageId?: string;
-  url?: string
+  url?: string;
 }
 
 export interface IBgUploadResponse {

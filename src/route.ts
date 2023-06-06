@@ -2,7 +2,7 @@ import { notificationRoutes } from '@notification/routes/notificationRoutes';
 import { authRoutes } from '@auth/routes/authRoutes';
 import { currentUserRoutes } from '@auth/routes/currentUserRoutes';
 import { blockRoutes } from '@block/routes/blockRoutes';
-import { commentRoutes } from '@comment/routes/commentRouters';
+import { commentRoutes } from '@comment/routes/commentRoutes';
 import { followRoutes } from '@follow/routes/followRoutes';
 import { authMiddleware } from '@global/helpers/authMiddleware';
 import { postRoutes } from '@post/routes/postRoutes';
@@ -10,6 +10,7 @@ import { reationRoutes } from '@reaction/routes/reactionRoutes';
 import { serverAdapter } from '@service/queues/base.queue';
 import { Application } from 'express';
 import { imageRoutes } from '@image/routes/imageRoutes';
+import { chatRoutes } from '@chat/routes/chatRoutes';
 
 const BASE_PATH = '/api/v1';
 
@@ -27,6 +28,7 @@ export default (app: Application) => {
     app.use(BASE_PATH, authMiddleware.verify, blockRoutes.routes());
     app.use(BASE_PATH, authMiddleware.verify, notificationRoutes.routes());
     app.use(BASE_PATH, authMiddleware.verify, imageRoutes.routes());
+    app.use(BASE_PATH, authMiddleware.verify, chatRoutes.routes());
   };
 
   routes();

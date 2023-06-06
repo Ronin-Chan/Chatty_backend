@@ -34,7 +34,9 @@ describe('DeleteNotification', () => {
 
     await DeleteNotification.prototype.deleteNotification(req, res);
     expect(notificationServer.notificationSocketIOObject.emit).toHaveBeenCalledWith('delete notification', req.params.notificationId);
-    expect(notificationQueue.addNotificationJob).toHaveBeenCalledWith('deleteNotificationFromDB', { notificationId: req.params.notificationId });
+    expect(notificationQueue.addNotificationJob).toHaveBeenCalledWith('deleteNotificationFromDB', {
+      notificationId: req.params.notificationId
+    });
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith({
       message: 'Notification deleted successfully'

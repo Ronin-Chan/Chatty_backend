@@ -14,26 +14,43 @@ import { IBgUploadResponse } from '@image/interfaces/image.interface';
 
 const userCache: UserCache = new UserCache();
 
-export class AddImage{
+export class AddImage {
   @joiValidation(addImageSchema)
-  public async addProfileImage(req: Request, res: Response, next: NextFunction): Promise<void>{
+  public async addProfileImage(req: Request, res: Response, next: NextFunction): Promise<void> {
     const result: UploadApiResponse = (await uploads(req.body.image, `${req.currentUser!.userId}`, true, true)) as UploadApiResponse;
     if (!result?.public_id) {
       return next(new BadRequestError('File upload: Error occurred. Try again.'));
     }
     const url = `https://res.cloudinary.com/dlohvpcwg/image/upload/v${result.version}/${result.public_id}`;
-    const cachedUser: IUserDocument = await userCache.updateSingleUserItemInCache(`${req.currentUser!.userId}`, 'profilePicture', url) as IUserDocument;
+    const cachedUser: IUserDocument = (await userCache.updateSingleUserItemInCache(
+      `${req.currentUser!.userId}`,
+      'profilePicture',
+      url
+    )) as IUserDocument;
     imageSocketIOObject.emit('update user', cachedUser);
-    imageQueue.addImageJob('addProfileImageToDB', { userId: cachedUser.id, imgId: result.public_id, imgVersion: result.version.toString(), url });
+    imageQueue.addImageJob('addProfileImageToDB', {
+      userId: cachedUser.id,
+      imgId: result.public_id,
+      imgVersion: result.version.toString(),
+      url
+    });
 
     res.status(HTTP_STATUS.OK).json({ message: 'Image added successfully' });
   }
 
   @joiValidation(addImageSchema)
-  public async addBgImage(req: Request, res: Response, next: NextFunction): Promise<void>{
+  public async addBgImage(req: Request, res: Response, next: NextFunction): Promise<void> {
     const { bgImgId, bgImgVersion }: IBgUploadResponse = await AddImage.prototype.bgImageUpload(req.body.image, next);
-    const updateBgImgId: Promise<IUserDocument> = userCache.updateSingleUserItemInCache(`${req.currentUser!.userId}`, 'bgImageId', bgImgId) as Promise<IUserDocument>;
-    const updateBgImgVersion: Promise<IUserDocument> = userCache.updateSingleUserItemInCache(`${req.currentUser!.userId}`, 'bgImageVersion', bgImgVersion) as Promise<IUserDocument>;
+    const updateBgImgId: Promise<IUserDocument> = userCache.updateSingleUserItemInCache(
+      `${req.currentUser!.userId}`,
+      'bgImageId',
+      bgImgId
+    ) as Promise<IUserDocument>;
+    const updateBgImgVersion: Promise<IUserDocument> = userCache.updateSingleUserItemInCache(
+      `${req.currentUser!.userId}`,
+      'bgImageVersion',
+      bgImgVersion
+    ) as Promise<IUserDocument>;
     const result: [IUserDocument, IUserDocument] = await Promise.all([updateBgImgId, updateBgImgVersion]);
 
     imageSocketIOObject.emit('update user', {
@@ -50,19 +67,19 @@ export class AddImage{
     res.status(HTTP_STATUS.OK).json({ message: 'Image added successfully' });
   }
 
-  private async bgImageUpload(image: string, next: NextFunction): Promise<IBgUploadResponse>{
+  private async bgImageUpload(image: string, next: NextFunction): Promise<IBgUploadResponse> {
     const res: boolean = Helpers.isDataURL(image);
     let bgImgId = '';
     let bgImgVersion = '';
-    if(res){
+    if (res) {
       const result: UploadApiResponse = (await uploads(image)) as UploadApiResponse;
       if (!result?.public_id) {
         next(new BadRequestError('File upload: Error occurred. Try again.'));
-      }else{
+      } else {
         bgImgVersion = result.version.toString();
         bgImgId = result.public_id;
       }
-    } else{
+    } else {
       const list: string[] = image.split('/');
       bgImgVersion = list[list.length - 2];
       bgImgId = list[list.length - 1];
@@ -70,4 +87,3 @@ export class AddImage{
     return { bgImgVersion: bgImgVersion.replace(/v/g, ''), bgImgId };
   }
 }
-
