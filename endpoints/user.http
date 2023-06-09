@@ -1,0 +1,90 @@
+@baseUrl = http://localhost:5000
+
+@urlPath = api/v1
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/all/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/646e08ba753161ea9ae8b59a
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/posts/Rrrrr/646e08ba753161ea9ae8b59a/914490149746
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/user/suggestions
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+GET {{baseUrl}}/{{urlPath}}/user/profile/search/r
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/profile/change-password
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "currentPassword" : "123456",
+  "confirmPassword" : "123111",
+  "newPassword": "123111"
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/profile/basic-info
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "quote": "string",
+  "work": "string",
+  "school": "string",
+  "location": "string"
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/profile/social-links
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "facebook": "string",
+  "instagram": "string",
+  "twitter": "string",
+  "youtube": "string"
+}
+
+###
+PUT {{baseUrl}}/{{urlPath}}/user/profile/notifications
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+{
+  "messages": false,
+  "reactions": false,
+  "comments": false,
+  "follows": true
+}
