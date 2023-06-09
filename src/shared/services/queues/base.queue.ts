@@ -14,6 +14,7 @@ import { IBlockJobData } from '@root/features/block/interfaces/block.interface';
 import { INotificationJobData } from '@notification/interfaces/notification.interface';
 import { IFileImageJobData } from '@image/interfaces/image.interface';
 import { IChatJobData, IMessageData } from '@chat/interfaces/chat.interface';
+import { IUserJob } from '@user/interfaces/user.interface';
 
 type IBaseJobData =
   | IAuthJob
@@ -26,7 +27,8 @@ type IBaseJobData =
   | INotificationJobData
   | IFileImageJobData
   | IChatJobData
-  | IMessageData;
+  | IMessageData
+  | IUserJob;
 
 let bullAdapters: BullAdapter[] = [];
 

@@ -4,7 +4,7 @@ import { Request, Response } from 'express';
 import { ReactionCache } from '@service/redis/reaction.cache';
 import HTTP_STATUS from 'http-status-codes';
 import { reactionQueue } from '@service/queues/reaction.queue';
-import { addReactionSchema } from '@reaction/schemes/reactions';
+import { addReactionSchema } from '@reaction/schemes/reactions.scheme';
 import { joiValidation } from '@global/decorators/joiValidation.decorators';
 
 const reactionCache: ReactionCache = new ReactionCache();

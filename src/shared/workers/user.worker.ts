@@ -19,6 +19,42 @@ class UserWorker {
       done(error as Error);
     }
   }
+
+  async updateBasicInfoInDB(job: Job, done: DoneCallback): Promise<void> {
+    try {
+      const { key, value } = job.data;
+      await userService.updateBasicInfo(key, value);
+      job.progress(100);
+      done(null, job.data); //first param is error, successful so we pass in null
+    } catch (error) {
+      log.error(error);
+      done(error as Error);
+    }
+  }
+
+  async updateSocialLinksInDB(job: Job, done: DoneCallback): Promise<void> {
+    try {
+      const { key, value } = job.data;
+      await userService.updateSocialLinks(key, value);
+      job.progress(100);
+      done(null, job.data); //first param is error, successful so we pass in null
+    } catch (error) {
+      log.error(error);
+      done(error as Error);
+    }
+  }
+
+  async updateNotificationSettingsInDB(job: Job, done: DoneCallback): Promise<void> {
+    try {
+      const { key, value } = job.data;
+      await userService.updateNotificationSettings(key, value);
+      job.progress(100);
+      done(null, job.data); //first param is error, successful so we pass in null
+    } catch (error) {
+      log.error(error);
+      done(error as Error);
+    }
+  }
 }
 
 export const userWorker: UserWorker = new UserWorker();
