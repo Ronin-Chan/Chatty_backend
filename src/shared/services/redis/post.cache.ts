@@ -32,6 +32,8 @@ export class PostCache extends BaseCache {
       commentsCount,
       imgVersion,
       imgId,
+      videoVersion,
+      videoId,
       reactions,
       createdAt
     } = createdPost;
@@ -71,7 +73,11 @@ export class PostCache extends BaseCache {
       'imgId',
       `${imgId}`,
       'createdAt',
-      `${createdAt}`
+      `${createdAt}`,
+      'videoVersion',
+      `${videoVersion}`,
+      'videoId',
+      `${videoId}`
     ];
     const dataToSave: string[] = [...firstList, ...secondList];
 
@@ -138,18 +144,49 @@ export class PostCache extends BaseCache {
         multi.HGETALL(`posts:${result[i]}`);
       }
       const results: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
-      const postWithImages: IPostDocument[] = [];
+      const postsWithImages: IPostDocument[] = [];
       for (const post of results as IPostDocument[]) {
         if ((post.imgId && post.imgVersion) || post.gifUrl) {
           //if those porpeties exist - true
           post.commentsCount = Helpers.customJsonParse(`${post.commentsCount}`) as number;
           post.reactions = Helpers.customJsonParse(`${post.reactions}`) as IReactions;
           post.createdAt = new Date(Helpers.customJsonParse(`${post.createdAt}`)) as Date;
-          postWithImages.push(post);
+          postsWithImages.push(post);
         }
       }
 
-      return postWithImages;
+      return postsWithImages;
+    } catch (error) {
+      log.error(error);
+      throw new ServerError('Server error. Try again.');
+    }
+  }
+
+  public async getPostsWithVideoFromCache(key: string, start: number, end: number): Promise<IPostDocument[]> {
+    try {
+      if (!this.client.isOpen) {
+        await this.client.connect();
+      }
+
+      const result: string[] = await this.client.ZRANGE(key, start, end); //windows can't use REV
+      const multi: ReturnType<typeof this.client.multi> = this.client.multi();
+      for (let i = result.length - 1; i >= 0; i--) {
+        //reverse to get lastest
+        multi.HGETALL(`posts:${result[i]}`);
+      }
+      const results: PostCacheMultiType = (await multi.exec()) as PostCacheMultiType;
+      const postsWithVideos: IPostDocument[] = [];
+      for (const post of results as IPostDocument[]) {
+        if (post.videoId && post.videoVersion) {
+          //if those porpeties exist - true
+          post.commentsCount = Helpers.customJsonParse(`${post.commentsCount}`) as number;
+          post.reactions = Helpers.customJsonParse(`${post.reactions}`) as IReactions;
+          post.createdAt = new Date(Helpers.customJsonParse(`${post.createdAt}`)) as Date;
+          postsWithVideos.push(post);
+        }
+      }
+
+      return postsWithVideos;
     } catch (error) {
       log.error(error);
       throw new ServerError('Server error. Try again.');
@@ -235,7 +272,7 @@ export class PostCache extends BaseCache {
   }
 
   public async updatePostInCache(key: string, updatedpost: IPostDocument): Promise<IPostDocument> {
-    const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, profilePicture } = updatedpost;
+    const { post, bgColor, feelings, privacy, gifUrl, imgVersion, imgId, profilePicture, videoId, videoVersion } = updatedpost;
     const dataToSave: string[] = [
       'post',
       `${post}`,
@@ -252,7 +289,11 @@ export class PostCache extends BaseCache {
       'imgId',
       `${imgId}`,
       'profilePicture',
-      `${profilePicture}`
+      `${profilePicture}`,
+      'videoId',
+      `${videoId}`,
+      'videoVersion',
+      `${videoVersion}`
     ];
     try {
       if (!this.client.isOpen) {
