@@ -22,7 +22,7 @@ export function uploads(
   });
 }
 
-export function videoUpload(
+export function uploadVideo(
   file: string,
   public_id?: string,
   overwrite?: boolean,
@@ -33,7 +33,7 @@ export function videoUpload(
       file,
       {
         resource_type: 'video',
-        chunk_size: 50000,
+        chunk_size: 50000, //50MB
         public_id,
         overwrite,
         invalidate

@@ -46,6 +46,12 @@ Accept: application/json
 withCredentials: true
 
 ###
+GET {{baseUrl}}/{{urlPath}}/post/video/1
+Content-Type: application/json
+Accept: application/json
+withCredentials: true
+
+###
 DELETE {{baseUrl}}/{{urlPath}}/post/<postId>
 Content-Type: application/json
 Accept: application/json
