@@ -1,18 +1,26 @@
-import { Application, json, urlencoded, Response, Request, NextFunction } from 'express';
-import http from 'http';
-import cors from 'cors';
-import helmet from 'helmet';
-import hpp from 'hpp';
+import { createAdapter } from '@socket.io/redis-adapter';
 import compression from 'compression';
 import cookieSession from 'cookie-session';
+import cors from 'cors';
+import { Application, NextFunction, Request, Response, json, urlencoded } from 'express';
+import helmet from 'helmet';
+import hpp from 'hpp';
+import http from 'http';
 import HTTP_STATUS from 'http-status-codes';
-import { config } from './config';
-import { Server } from 'socket.io';
-import { createAdapter } from '@socket.io/redis-adapter';
 import { createClient } from 'redis';
-import applicationRoutes from './route';
-import { CustomError, IErrorResponse } from './shared/globals/helpers/errorHandler';
+import { Server } from 'socket.io';
+import { config } from '@root/config';
+import applicationRoutes from '@root/route';
+
+import { CustomError, IErrorResponse } from '@global/helpers/errorHandler';
 import Logger from 'bunyan';
+import { PostSocketIOHandler } from '@socket/post.socket';
+import { FollowSocketIOHandler } from '@socket/follow.socket';
+import { UserSocketIOHandler } from '@socket/user.socket';
+import { NotificationSocketIOHandler } from '@socket/notification.socket';
+import { ImageSocketIOHandler } from '@socket/image.scoket';
+import { ChatSocketIOHandler } from '@socket/chat.socket';
+import apiStats from 'swagger-stats';
 
 const SERVER_PORT = 5000;
 const log: Logger = config.createLogger('server');
@@ -29,8 +37,9 @@ export class ChattyServer {
     this.securityMiddleware(this.app);
     this.standardMiddleware(this.app);
     this.routesMiddleware(this.app);
-    this.globalErrorHandler(this.app);
+    this.apiMonitoring(this.app);
     this.startServer(this.app);
+    this.globalErrorHandler(this.app);
   }
 
   private securityMiddleware(app: Application): void {
@@ -64,12 +73,20 @@ export class ChattyServer {
     applicationRoutes(app);
   }
 
+  private apiMonitoring(app: Application):void {
+    app.use(
+      apiStats.getMiddleware({
+        uriPath: '/api-monitoring'
+      })
+    );
+  }
+
   private globalErrorHandler(app: Application): void {
     app.all('*', (req: Request, res: Response) => {
       res.status(HTTP_STATUS.NOT_FOUND).json({ message: `${req.originalUrl} not found` });
     });
 
-    app.use((error: IErrorResponse, req: Request, res: Response, next: NextFunction) => {
+    app.use((error: IErrorResponse, _req: Request, res: Response, next: NextFunction) => {
       log.error(error);
       if (error instanceof CustomError) {
         return res.status(error.statusCode).json(error.serializeErrors());
@@ -110,5 +127,19 @@ export class ChattyServer {
     });
   }
 
-  private socketIOConnections(io: Server): void {}
+  private socketIOConnections(io: Server): void {
+    const postSocketIOHandle: PostSocketIOHandler = new PostSocketIOHandler(io);
+    const followSocketIOHandle: FollowSocketIOHandler = new FollowSocketIOHandler(io);
+    const userSocketIOHandle: UserSocketIOHandler = new UserSocketIOHandler(io);
+    const notificationSocketIOHandler: NotificationSocketIOHandler = new NotificationSocketIOHandler();
+    const imageSocketIOObject: ImageSocketIOHandler = new ImageSocketIOHandler();
+    const chatSocketIOObject: ChatSocketIOHandler = new ChatSocketIOHandler(io);
+
+    postSocketIOHandle.listen();
+    followSocketIOHandle.listen();
+    userSocketIOHandle.listen();
+    notificationSocketIOHandler.listen(io);
+    imageSocketIOObject.listen(io);
+    chatSocketIOObject.listen();
+  }
 }
