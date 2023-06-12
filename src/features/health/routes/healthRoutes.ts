@@ -42,6 +42,7 @@ class HealthRoutes {
     return this.router;
   }
 
+  //for illustrating the usitility of PM2
   public fiboRoutes(): Router {
     this.router.get('/fibo/:num', async (req: Request, res: Response) => {
       const { num } = req.params;

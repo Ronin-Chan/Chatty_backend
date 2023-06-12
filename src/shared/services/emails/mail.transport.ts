@@ -4,6 +4,7 @@ import Logger from 'bunyan';
 import sendGridMail from '@sendgrid/mail';
 import { config } from '@root/config';
 // import { BadRequestError } from '@global/helpers/errorHandler';
+import Sendcloud from 'sendcloud';
 
 interface IMailOptions {
   from: string;
@@ -14,6 +15,7 @@ interface IMailOptions {
 
 const log: Logger = config.createLogger('mailOptions');
 // sendGridMail.setApiKey(config.SENDGRID_API_KEY!);
+const sc = new Sendcloud('sc_7hpifc_test_QKVT9R','[422f9468fa648964ebe0209f1d614ea4]',`${config.SENDER_EMAIL!}`,'Chatty','bgdev_batch');
 
 class MailTransport {
   public async sendEmail(receiverEmail: string, subject: string, body: string): Promise<void> {
@@ -52,15 +54,16 @@ class MailTransport {
   }
 
   private async productionEmailSender(receiverEmail: string, subject: string, body: string): Promise<void> {
-    const mailOptions: IMailOptions = {
-      from: `Chatty App <${config.SENDER_EMAIL!}>`,
-      to: receiverEmail,
-      subject,
-      html: body
-    };
+    // const mailOptions: IMailOptions = {
+    //   from: `Chatty App <${config.SENDER_EMAIL!}>`,
+    //   to: receiverEmail,
+    //   subject,
+    //   html: body
+    // };
 
     try {
-      await sendGridMail.send(mailOptions);
+      // await sendGridMail.send(mailOptions);
+      await sc.send(receiverEmail, subject, body);
       log.info('Production email sent successfully.');
     } catch (error) {
       log.error('Error sending email', error);
