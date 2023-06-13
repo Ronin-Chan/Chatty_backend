@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import Mail from 'nodemailer/lib/mailer';
 import Logger from 'bunyan';
-import sendGridMail from '@sendgrid/mail';
+// import sendGridMail from '@sendgrid/mail';
 import { config } from '@root/config';
 // import { BadRequestError } from '@global/helpers/errorHandler';
 import Sendcloud from 'sendcloud';
@@ -15,7 +15,7 @@ interface IMailOptions {
 
 const log: Logger = config.createLogger('mailOptions');
 // sendGridMail.setApiKey(config.SENDGRID_API_KEY!);
-const sc = new Sendcloud('sc_7hpifc_test_QKVT9R','[422f9468fa648964ebe0209f1d614ea4]',`${config.SENDER_EMAIL!}`,'Chatty','bgdev_batch');
+const sc = new Sendcloud(`${config.SENDCLOUD_API_USER}`,`${config.SENDCLOUD_API_KEY}`,`${config.SENDCLOUD_EMAIL!}`,'Chatty');
 
 class MailTransport {
   public async sendEmail(receiverEmail: string, subject: string, body: string): Promise<void> {
