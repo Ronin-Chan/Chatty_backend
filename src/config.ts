@@ -19,6 +19,9 @@ class Config {
   public SENDER_EMAIL_PASSWORD: string | undefined;
   public SENDGRID_API_KEY: string | undefined;
   public SENDGRID_SENDER: string | undefined;
+  public SENDCLOUD_EMAIL: string | undefined;
+  public SENDCLOUD_API_KEY: string | undefined;
+  public SENDCLOUD_API_USER: string | undefined;
   public EC2_URL: string | undefined;
 
   private readonly DEFAULT_DB_URL = 'mongodb://localhost:27017/chatty-backend';
@@ -40,6 +43,9 @@ class Config {
     this.SENDER_EMAIL_PASSWORD = process.env.SENDER_EMAIL_PASSWORD || '';
     this.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
     this.SENDGRID_SENDER = process.env.SENDGRID_SENDER || '';
+    this.SENDCLOUD_EMAIL = process.env.SENDCLOUD_EMAIL || '';
+    this.SENDCLOUD_API_KEY = process.env.SENDCLOUD_API_KEY || '';
+    this.SENDCLOUD_API_USER = process.env.SENDCLOUD_API_USER || '';
     this.EC2_URL = process.env.EC2_URL || '';
   }
 
